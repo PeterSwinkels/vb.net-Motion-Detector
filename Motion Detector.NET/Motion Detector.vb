@@ -47,7 +47,7 @@ Public Module MotionDetectorModule
       Public dwCurrentVideoFramesDropped As Integer
       Public dwCurrentWaveSamples As Integer
       Public dwCurrentTimeElapsedMS As Integer
-      Public hPalCurrent As Integer
+      Public hPalCurrent As IntPtr
       Public fCapturingNow As Integer
       Public dwReturn As Integer
       Public wNumVideoAllocated As Integer

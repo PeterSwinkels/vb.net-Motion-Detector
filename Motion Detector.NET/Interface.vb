@@ -28,7 +28,7 @@ Public Class InterfaceWindow
       Public Blue As Integer   'Defines the blue color component.
    End Structure
 
-   Private Const BYTES_PER_PIXEL As Integer = 3  'The number of bytes per RGB pixel.
+   Private Const BYTES_PER_PIXEL As Integer = 3  'Defines the number of bytes per RGB pixel.
 
    Public WithEvents MotionDetector As New Timer With {.Enabled = False, .Interval = 1}  'Contains the motion detector.
 

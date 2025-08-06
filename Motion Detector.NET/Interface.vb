@@ -15,7 +15,7 @@ Imports System.Windows.Forms
 
 'This module contains this program's main interface window.
 Public Class InterfaceWindow
-   'This enumaration contains the list of the available views.
+   'This enumeration contains the list of the available views.
    Private Enum ViewsE As Integer
       CurrentView      'Current view.
       MotionView       'Motion viewer.
@@ -263,7 +263,7 @@ Public Class InterfaceWindow
    'This procedure opens the video compression dialog window.
    Private Sub VideoCompressionMenu_Click(sender As Object, e As EventArgs) Handles VideoCompressionMenu.Click
       Try
-         SendMessageA(CaptureWindow(), WM_CAP_DLG_VIDEOCOMPRESSION, 0, Nothing)
+         SendMessageA(CaptureWindow(), WM_CAP_DLG_VIDEOCOMPRESSION, Nothing, IntPtr.Zero)
       Catch ExceptionO As Exception
          HandleError(ExceptionO)
       End Try
@@ -273,7 +273,7 @@ Public Class InterfaceWindow
    Private Sub VideoFormatMenu_Click(sender As Object, e As EventArgs) Handles VideoFormatMenu.Click
       Try
          MotionDetector.Enabled = False
-         SendMessageA(CaptureWindow(), WM_CAP_DLG_VIDEOFORMAT, 0, Nothing)
+         SendMessageA(CaptureWindow(), WM_CAP_DLG_VIDEOFORMAT, Nothing, IntPtr.Zero)
          AdjustPositionAndSize(CurrentViewBox, New Point(0, MenuBar.Height))
          MotionDetector.Enabled = True
       Catch ExceptionO As Exception
@@ -284,7 +284,7 @@ Public Class InterfaceWindow
    'This procedure opens the video source dialog window.
    Private Sub VideoSourceMenu_Click(sender As Object, e As EventArgs) Handles VideoSourceMenu.Click
       Try
-         SendMessageA(CaptureWindow(), WM_CAP_DLG_VIDEOSOURCE, 0, Nothing)
+         SendMessageA(CaptureWindow(), WM_CAP_DLG_VIDEOSOURCE, Nothing, IntPtr.Zero)
       Catch ExceptionO As Exception
          HandleError(ExceptionO)
       End Try

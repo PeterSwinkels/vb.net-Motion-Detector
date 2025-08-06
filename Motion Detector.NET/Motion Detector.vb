@@ -17,44 +17,46 @@ Imports System.Windows.Forms
 'This module contains this program's core procedures.
 Public Module MotionDetectorModule
    'The Microsoft Windows API constants, functions and structures used by this program.
-   Public Const WM_CAP_DLG_VIDEOCOMPRESSION As Integer = 1070
-   Public Const WM_CAP_DLG_VIDEOFORMAT As Integer = 1065
-   Public Const WM_CAP_DLG_VIDEOSOURCE As Integer = 1066
-   Private Const WM_CAP_DRIVER_CONNECT As Integer = 1034
-   Private Const WM_CAP_DRIVER_DISCONNECT As Integer = 1035
-   Private Const WM_CAP_EDIT_COPY As Integer = 1054
-   Private Const WM_CAP_GET_STATUS As Integer = 1078
-   Private Const WM_CAP_GRAB_FRAME As Integer = 1084
-   Private Const WM_CLOSE As Integer = 16
-   Private Const WS_CHILD As Integer = &H40000000%
+   Public Const WM_CAP_DLG_VIDEOCOMPRESSION As UInteger = &H42EUI
+   Public Const WM_CAP_DLG_VIDEOFORMAT As UInteger = &H42CUI
+   Public Const WM_CAP_DLG_VIDEOSOURCE As UInteger = &H42AUI
+   Private Const WM_CAP_DRIVER_CONNECT As UInteger = &H40AUI
+   Private Const WM_CAP_DRIVER_DISCONNECT As UInteger = &H40BUI
+   Private Const WM_CAP_EDIT_COPY As UInteger = &H41EUI
+   Private Const WM_CAP_GET_STATUS As UInteger = &H436UI
+   Private Const WM_CAP_GRAB_FRAME As UInteger = &H43CUI
+   Private Const WM_CLOSE As UInteger = &H10UI
+   Private Const WS_CHILD As UInteger = &H40000000UI
 
+   <StructLayout(LayoutKind.Sequential)>
    Private Structure POINTAPI
       Public x As Integer
       Public y As Integer
    End Structure
 
+   <StructLayout(LayoutKind.Sequential)>
    Private Structure CAPSTATUS
-      Public uiImageWidth As Integer
-      Public uiImageHeight As Integer
-      Public fLiveWindow As Integer
-      Public fOverlayWindow As Integer
-      Public fScale As Integer
+      Public uiImageWidth As UInteger
+      Public uiImageHeight As UInteger
+      Public fLiveWindow As Boolean
+      Public fOverlayWindow As Boolean
+      Public fScale As Boolean
       Public ptScroll As POINTAPI
-      Public fUsingDefaultPalette As Integer
-      Public fAudioHardware As Integer
-      Public fCapFileExists As Integer
-      Public dwCurrentVideoFrame As Integer
-      Public dwCurrentVideoFramesDropped As Integer
-      Public dwCurrentWaveSamples As Integer
-      Public dwCurrentTimeElapsedMS As Integer
+      Public fUsingDefaultPalette As Boolean
+      Public fAudioHardware As Boolean
+      Public fCapFileExists As Boolean
+      Public dwCurrentVideoFrame As UInteger
+      Public dwCurrentVideoFramesDropped As UInteger
+      Public dwCurrentWaveSamples As UInteger
+      Public dwCurrentTimeElapsedMS As UInteger
       Public hPalCurrent As IntPtr
-      Public fCapturingNow As Integer
-      Public dwReturn As Integer
-      Public wNumVideoAllocated As Integer
-      Public wNumAudioAllocated As Integer
+      Public fCapturingNow As Boolean
+      Public dwReturn As UInteger
+      Public wNumVideoAllocated As UInteger
+      Public wNumAudioAllocated As UInteger
    End Structure
 
-   <DllImport("User32.dll", SetLastError:=True)> Public Function SendMessageA(ByVal hWnd As IntPtr, ByVal wMsg As Integer, ByVal wParam As Integer, ByVal lParam As IntPtr) As Integer
+   <DllImport("User32.dll", CharSet:=CharSet.Ansi, SetLastError:=True)> Public Function SendMessageA(ByVal hWnd As IntPtr, ByVal wMsg As UInteger, ByVal wParam As Integer, ByVal lParam As IntPtr) As Integer
    End Function
    <DllImport("Avicap32.dll", SetLastError:=True)> Private Function capCreateCaptureWindowA(ByVal lpszWindowName As String, ByVal dwStyle As Integer, ByVal X As Integer, ByVal Y As Integer, ByVal nWidth As Integer, ByVal nHeight As Integer, ByVal hwndParent As IntPtr, ByVal nID As Integer) As IntPtr
    End Function
@@ -82,7 +84,7 @@ Public Module MotionDetectorModule
             ElseIf .uiImageHeight >= My.Computer.Screen.WorkingArea.Width OrElse .uiImageWidth >= My.Computer.Screen.WorkingArea.height Then
                NewSize = New Size(CInt(My.Computer.Screen.WorkingArea.Width / 1.1), CInt(My.Computer.Screen.WorkingArea.Height / 1.1))
             Else
-               NewSize = New Size(.uiImageWidth, .uiImageHeight)
+               NewSize = New Size(CInt(.uiImageWidth), CInt(.uiImageHeight))
             End If
          End With
 
@@ -100,10 +102,10 @@ Public Module MotionDetectorModule
 
          If StartCapture Then
             CaptureWindowH = capCreateCaptureWindowA(Nothing, WS_CHILD, 0, 0, 0, 0, InterfaceWindow.Handle, 0)
-            If Not CaptureWindowH = IntPtr.Zero Then SendMessageA(CaptureWindowH, WM_CAP_DRIVER_CONNECT, 0, Nothing)
+            If Not CaptureWindowH = IntPtr.Zero Then SendMessageA(CaptureWindowH, WM_CAP_DRIVER_CONNECT, Nothing, IntPtr.Zero)
          ElseIf StopCapture Then
-            SendMessageA(CaptureWindowH, WM_CAP_DRIVER_DISCONNECT, 0, Nothing)
-            SendMessageA(CaptureWindowH, WM_CLOSE, 0, Nothing)
+            SendMessageA(CaptureWindowH, WM_CAP_DRIVER_DISCONNECT, Nothing, IntPtr.Zero)
+            SendMessageA(CaptureWindowH, WM_CLOSE, Nothing, IntPtr.Zero)
             CaptureWindowH = IntPtr.Zero
          End If
 
@@ -136,8 +138,8 @@ Public Module MotionDetectorModule
    'This procedure returns a single frame from the image capture device.
    Public Function GrabFrame() As Bitmap
       Try
-         SendMessageA(CaptureWindow(), WM_CAP_GRAB_FRAME, 0, Nothing)
-         SendMessageA(CaptureWindow(), WM_CAP_EDIT_COPY, 0, Nothing)
+         SendMessageA(CaptureWindow(), WM_CAP_GRAB_FRAME, Nothing, IntPtr.Zero)
+         SendMessageA(CaptureWindow(), WM_CAP_EDIT_COPY, Nothing, IntPtr.Zero)
 
          Return If(Clipboard.GetImage() Is Nothing, New Bitmap(InterfaceWindow.CurrentViewBox.Width, InterfaceWindow.CurrentViewBox.Height), New Bitmap(Clipboard.GetImage))
       Catch ExceptionO As Exception
